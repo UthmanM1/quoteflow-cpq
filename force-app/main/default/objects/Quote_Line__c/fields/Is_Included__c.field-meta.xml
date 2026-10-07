@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Is_Included__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Priced at zero; component is covered by the bundle price.</description>
+    <label>Included In Bundle Price</label>
+    <required>false</required>
+    <type>Checkbox</type>
+</CustomField>
