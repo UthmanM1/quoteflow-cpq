@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Commercial quote. Stand-in for SBQQ__Quote__c so the demo is deployable without a CPQ licence.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>Quote</label>
+    <nameField>
+        <displayFormat>Q-{000000}</displayFormat>
+        <label>Quote Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Quotes</pluralLabel>
+    <sharingModel>Private</sharingModel>
+    <sharingReasons>
+        <fullName>Approver_Access</fullName>
+        <label>Approver Access</label>
+    </sharingReasons>
+</CustomObject>
