@@ -1,0 +1,30 @@
+{
+  "name": "quoteflow-cpq",
+  "private": true,
+  "version": "1.2.0",
+  "description": "QuoteFlow CPQ - Salesforce CPQ-style portfolio demonstration (fictional company, not a client system)",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "lint": "eslint force-app/main/default/lwc revops-lab/main/default/lwc",
+    "test:unit": "sfdx-lwc-jest",
+    "test:unit:coverage": "sfdx-lwc-jest --coverage",
+    "check:fls": "python3 scripts/ci/check_fls.py",
+    "check:metadata-order": "python3 scripts/ci/normalize_metadata.py --check force-app revops-lab",
+    "generate:lab-security": "python3 scripts/revops-lab/generate_security.py",
+    "prettier": "prettier --write \"{force-app,revops-lab}/**/*.{cls,trigger,js,html}\"",
+    "prettier:verify": "prettier --check \"{force-app,revops-lab}/**/*.{cls,trigger,js}\""
+  },
+  "devDependencies": {
+    "@lwc/eslint-plugin-lwc": "^2.0.0",
+    "@salesforce/eslint-config-lwc": "^3.7.2",
+    "@salesforce/eslint-plugin-lightning": "^1.0.0",
+    "@salesforce/sfdx-lwc-jest": "^7.0.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-import": "^2.31.0",
+    "eslint-plugin-jest": "^28.8.0",
+    "prettier": "^3.3.0",
+    "prettier-plugin-apex": "^2.1.0"
+  }
+}
