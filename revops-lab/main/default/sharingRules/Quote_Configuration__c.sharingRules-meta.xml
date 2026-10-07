@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>Finance_Edits_Submitted_Quotes</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Finance managers sit outside the sales line of the role hierarchy. They need record-level edit on submitted quotes so the with-sharing approval service can record their tier 2 decisions. Field-level security keeps every quote field read-only for them in the UI.</description>
+        <label>Finance Edits Submitted Quotes</label>
+        <sharedTo>
+            <roleAndSubordinates>Finance_Manager</roleAndSubordinates>
+        </sharedTo>
+        <criteriaItems>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Draft,Cancelled</value>
+        </criteriaItems>
+        <includeRecordsOwnedByAll>true</includeRecordsOwnedByAll>
+    </sharingCriteriaRules>
+</SharingRules>

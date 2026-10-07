@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Persona group for the RevOps Lab: Sales Integration User.</description>
+    <label>Sales Integration User</label>
+    <permissionSets>Sales_Integration_Access</permissionSets>
+    <status>Updated</status>
+</PermissionSetGroup>
