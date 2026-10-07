@@ -1,0 +1,9 @@
+node_modules/
+.sfdx/
+.sf/
+.localdevserver/
+coverage/
+*.log
+.env
+.vscode/settings.json
+**/__tests__/coverage/

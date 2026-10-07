@@ -1,0 +1,112 @@
+name: Deploy
+
+# develop -> integration sandbox (automatic)
+# main    -> validate against production (no changes saved, job id captured)
+#         -> deploy the same commit to UAT
+#         -> manual approval on the "production" environment
+#         -> quick-deploy exactly the validation captured above, then tag the release
+#
+# Production can only be reached from main. Quick deploy never targets a validation from another commit,
+# and if the validation has expired the job fails instead of silently running an unvalidated full deploy.
+
+on:
+  push:
+    branches: [develop, main]
+  # Re-run for the branch selected in the UI; the branch, not an input, decides the target.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  SF_CLI_VERSION: '2'
+
+jobs:
+  deploy-integration:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: integration
+    concurrency:
+      group: deploy-integration
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/sf-setup
+        with:
+          auth-url: ${{ secrets.SFDX_AUTH_URL }}
+          alias: target
+      - name: Deploy and run local tests
+        run: sf project deploy start --source-dir force-app --target-org target --test-level RunLocalTests --wait 60
+
+  validate-production:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    environment: production-validation
+    concurrency:
+      group: release
+      cancel-in-progress: false
+    outputs:
+      job-id: ${{ steps.validate.outputs.job-id }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/sf-setup
+        with:
+          auth-url: ${{ secrets.SFDX_AUTH_URL }}
+          alias: production
+      - name: Validate against production (nothing is saved)
+        id: validate
+        run: |
+          sf project deploy validate --source-dir force-app --target-org production \
+            --test-level RunLocalTests --wait 90 --json > validate.json || { cat validate.json; exit 1; }
+          JOB_ID=$(jq -r '.result.id' validate.json)
+          if [ -z "$JOB_ID" ] || [ "$JOB_ID" = "null" ]; then echo "No validation id returned"; exit 1; fi
+          echo "job-id=$JOB_ID" >> "$GITHUB_OUTPUT"
+          echo "Validated $GITHUB_SHA as deployment $JOB_ID" >> "$GITHUB_STEP_SUMMARY"
+
+  deploy-uat:
+    if: github.ref == 'refs/heads/main'
+    needs: validate-production
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    environment: uat
+    concurrency:
+      group: deploy-uat
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/sf-setup
+        with:
+          auth-url: ${{ secrets.SFDX_AUTH_URL }}
+          alias: uat
+      - name: Deploy the release candidate to UAT
+        run: sf project deploy start --source-dir force-app --target-org uat --test-level RunLocalTests --wait 60
+
+  deploy-production:
+    if: github.ref == 'refs/heads/main'
+    needs: [validate-production, deploy-uat]
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Required reviewers on this environment are the release approval (business sign-off after UAT).
+    environment: production
+    concurrency:
+      group: release
+      cancel-in-progress: false
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: ./.github/actions/sf-setup
+        with:
+          auth-url: ${{ secrets.SFDX_AUTH_URL }}
+          alias: production
+      - name: Quick-deploy the validated release
+        run: |
+          sf project deploy quick --job-id "${{ needs.validate-production.outputs.job-id }}" \
+            --target-org production --wait 60
+      - name: Tag release
+        run: |
+          TAG="release-$(date -u +%Y%m%d-%H%M)"
+          git tag "$TAG" "$GITHUB_SHA"
+          git push origin "$TAG"

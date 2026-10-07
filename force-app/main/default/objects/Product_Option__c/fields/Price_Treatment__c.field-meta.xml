@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Price_Treatment__c</fullName>
+    <inlineHelpText>Included options are priced at zero within the bundle.</inlineHelpText>
+    <label>Price Treatment</label>
+    <required>true</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Additive</fullName>
+                <default>true</default>
+                <label>Additive</label>
+            </value>
+            <value>
+                <fullName>Included</fullName>
+                <default>false</default>
+                <label>Included</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

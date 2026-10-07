@@ -1,0 +1,6 @@
+# Replace @your-github-handle with the real owner before enabling branch protection.
+* @your-github-handle
+/force-app/main/default/permissionsets/ @your-github-handle
+/force-app/main/default/classes/QuoteStateWriter.cls @your-github-handle
+/.github/ @your-github-handle
+/docs/SECURITY.md @your-github-handle

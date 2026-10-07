@@ -1,0 +1,32 @@
+name: Salesforce CLI setup and login
+description: Installs a pinned Salesforce CLI major version and logs in to one org from an SFDX auth URL secret.
+inputs:
+  auth-url:
+    description: SFDX auth URL (from a GitHub environment secret). Never echoed.
+    required: true
+  alias:
+    description: Alias for the authenticated org.
+    required: true
+  set-default-dev-hub:
+    description: Set this org as the default Dev Hub.
+    required: false
+    default: 'false'
+runs:
+  using: composite
+  steps:
+    - name: Install Salesforce CLI
+      shell: bash
+      run: npm install --global @salesforce/cli@${SF_CLI_VERSION:-2}
+    - name: Log in
+      shell: bash
+      env:
+        AUTH_URL: ${{ inputs.auth-url }}
+      run: |
+        umask 077
+        printf '%s' "$AUTH_URL" > "$RUNNER_TEMP/auth.txt"
+        if [ "${{ inputs.set-default-dev-hub }}" = "true" ]; then
+          sf org login sfdx-url --sfdx-url-file "$RUNNER_TEMP/auth.txt" --alias "${{ inputs.alias }}" --set-default-dev-hub
+        else
+          sf org login sfdx-url --sfdx-url-file "$RUNNER_TEMP/auth.txt" --alias "${{ inputs.alias }}"
+        fi
+        rm -f "$RUNNER_TEMP/auth.txt"
