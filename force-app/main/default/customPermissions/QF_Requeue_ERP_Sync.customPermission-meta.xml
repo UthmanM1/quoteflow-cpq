@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Allows an operator to put permanently failed ERP syncs back in the queue (starts a new idempotency generation).</description>
+    <isLicensed>false</isLicensed>
+    <label>QF Requeue ERP Sync</label>
+</CustomPermission>
