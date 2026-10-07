@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Support Tiers Exclusive</label>
+    <protected>false</protected>
+    <values>
+        <field>Rule_Type__c</field>
+        <value xsi:type="xsd:string">Excludes</value>
+    </values>
+    <values>
+        <field>Bundle_SKU__c</field>
+        <value xsi:type="xsd:string">QF-PLATFORM-ENT</value>
+    </values>
+    <values>
+        <field>Source_SKU__c</field>
+        <value xsi:type="xsd:string">QF-SUPPORT-PREMIUM</value>
+    </values>
+    <values>
+        <field>Target_SKU__c</field>
+        <value xsi:type="xsd:string">QF-SUPPORT-STD</value>
+    </values>
+    <values>
+        <field>Message__c</field>
+        <value xsi:type="xsd:string">Premium and Standard support cannot be combined.</value>
+    </values>
+    <values>
+        <field>Is_Active__c</field>
+        <value xsi:type="xsd:boolean">true</value>
+    </values>
+</CustomMetadata>
