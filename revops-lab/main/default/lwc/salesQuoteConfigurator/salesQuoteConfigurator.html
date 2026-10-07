@@ -1,0 +1,191 @@
+<template>
+    <lightning-card title="Quote Configurator (RevOps Lab)" icon-name="standard:quotes">
+        <div slot="actions">
+            <template lwc:if={isSaved}>
+                <lightning-button
+                    label="Open quote"
+                    onclick={handleOpenQuote}
+                    class="slds-m-right_x-small"
+                ></lightning-button>
+                <lightning-button label="New quote" onclick={handleStartOver}></lightning-button>
+            </template>
+        </div>
+
+        <div class="slds-var-p-horizontal_medium slds-is-relative">
+            <template lwc:if={busy}>
+                <lightning-spinner alternative-text="Working" size="small"></lightning-spinner>
+            </template>
+
+            <template lwc:if={loadError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error slds-var-m-bottom_small" role="alert">
+                    <h2>{loadError}</h2>
+                </div>
+            </template>
+            <template lwc:if={actionError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error slds-var-m-bottom_small" role="alert">
+                    <h2 data-id="action-error">{actionError}</h2>
+                </div>
+            </template>
+
+            <template lwc:if={isLoaded}>
+                <div class="slds-grid slds-wrap slds-gutters_small slds-var-m-bottom_small">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                        <p class="slds-text-title">Account</p>
+                        <p class="slds-text-heading_small">{context.accountName}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                        <p class="slds-text-title">Price book</p>
+                        <p>{context.pricebookName}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                        <lightning-input
+                            data-id="term"
+                            type="number"
+                            label="Term (months)"
+                            value={termMonths}
+                            min="1"
+                            max={maxTermMonths}
+                            step="1"
+                            disabled={isSaved}
+                            onchange={handleTermChange}
+                        ></lightning-input>
+                    </div>
+                </div>
+
+                <template for:each={lineRows} for:item="row">
+                    <div key={row.key} class="slds-box slds-box_x-small slds-var-m-bottom_x-small">
+                        <div class="slds-grid slds-wrap slds-gutters_x-small slds-grid_vertical-align-end">
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-12">
+                                <lightning-combobox
+                                    label="Product"
+                                    placeholder="Select a product"
+                                    options={productOptions}
+                                    value={row.productId}
+                                    data-key={row.key}
+                                    data-field="productId"
+                                    disabled={isSaved}
+                                    onchange={handleLineChange}
+                                ></lightning-combobox>
+                            </div>
+                            <div class="slds-col slds-size_1-of-3 slds-medium-size_2-of-12">
+                                <lightning-input
+                                    type="number"
+                                    label="Quantity"
+                                    value={row.quantity}
+                                    min="1"
+                                    data-key={row.key}
+                                    data-field="quantity"
+                                    disabled={isSaved}
+                                    onchange={handleLineChange}
+                                ></lightning-input>
+                            </div>
+                            <div class="slds-col slds-size_1-of-3 slds-medium-size_2-of-12">
+                                <lightning-input
+                                    type="number"
+                                    label="Discount %"
+                                    value={row.discountPercent}
+                                    min="0"
+                                    max={row.maxDiscount}
+                                    step="0.5"
+                                    field-level-help={row.discountHelp}
+                                    data-key={row.key}
+                                    data-field="discountPercent"
+                                    disabled={isSaved}
+                                    onchange={handleLineChange}
+                                ></lightning-input>
+                            </div>
+                            <div class="slds-col slds-size_1-of-3 slds-medium-size_2-of-12 slds-text-align_right">
+                                <p class="slds-text-title">Net</p>
+                                <p>{row.netTotalLabel}</p>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-12 slds-text-align_right">
+                                <lightning-button-icon
+                                    icon-name="utility:delete"
+                                    alternative-text="Remove line"
+                                    variant="bare"
+                                    data-key={row.key}
+                                    disabled={isSaved}
+                                    onclick={handleRemoveLine}
+                                ></lightning-button-icon>
+                            </div>
+                        </div>
+                        <template lwc:if={row.clientError}>
+                            <p class="slds-text-color_error slds-text-body_small" data-role="line-error">
+                                {row.clientError}
+                            </p>
+                        </template>
+                        <template lwc:elseif={row.serverError}>
+                            <p class="slds-text-color_error slds-text-body_small" data-role="line-error">
+                                {row.serverError}
+                            </p>
+                        </template>
+                    </div>
+                </template>
+
+                <lightning-button
+                    label="Add product"
+                    icon-name="utility:add"
+                    onclick={handleAddLine}
+                    disabled={isSaved}
+                    class="slds-var-m-vertical_small"
+                ></lightning-button>
+
+                <template lwc:if={hasServerErrors}>
+                    <div class="slds-box slds-theme_error slds-var-m-vertical_small" role="alert">
+                        <ul class="slds-list_dotted">
+                            <template for:each={serverErrors} for:item="message">
+                                <li key={message}>{message}</li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+
+                <template lwc:if={summary}>
+                    <div class="slds-box slds-var-m-top_small" data-id="summary">
+                        <div class="slds-grid slds-wrap slds-gutters_small">
+                            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                                <p class="slds-text-title">List</p>
+                                <p>{summary.list}</p>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                                <p class="slds-text-title">Discount</p>
+                                <p>{summary.discount}</p>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                                <p class="slds-text-title">Highest line discount</p>
+                                <p>{summary.maxDiscount}</p>
+                            </div>
+                            <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4 slds-text-align_right">
+                                <p class="slds-text-title">Net amount</p>
+                                <p class="slds-text-heading_medium">{summary.net}</p>
+                            </div>
+                        </div>
+                        <p class="slds-var-m-top_x-small slds-text-body_small" data-id="approval-message">
+                            <lightning-icon
+                                icon-name={approvalIcon}
+                                size="x-small"
+                                class="slds-var-m-right_x-small"
+                            ></lightning-icon>
+                            {approvalMessage}
+                        </p>
+                    </div>
+                </template>
+            </template>
+        </div>
+
+        <div slot="footer">
+            <lightning-button
+                label="Save quote"
+                variant="brand"
+                disabled={saveDisabled}
+                onclick={handleSave}
+                class="slds-var-m-right_x-small"
+            ></lightning-button>
+            <lightning-button
+                label="Submit for approval"
+                disabled={submitDisabled}
+                onclick={handleSubmit}
+            ></lightning-button>
+        </div>
+    </lightning-card>
+</template>

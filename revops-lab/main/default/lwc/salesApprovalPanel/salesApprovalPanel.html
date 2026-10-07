@@ -1,0 +1,134 @@
+<template>
+    <lightning-card title="Approval (RevOps Lab)" icon-name="standard:approval">
+        <div class="slds-var-p-horizontal_medium slds-is-relative">
+            <template lwc:if={isWorking}>
+                <lightning-spinner alternative-text="Working" size="small"></lightning-spinner>
+            </template>
+            <template lwc:if={loadError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <h2>{loadError}</h2>
+                </div>
+            </template>
+            <template lwc:if={actionError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error slds-var-m-bottom_small" role="alert">
+                    <h2 data-id="action-error">{actionError}</h2>
+                </div>
+            </template>
+
+            <template lwc:if={hasSummary}>
+                <div class="slds-grid slds-wrap slds-gutters_small">
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                        <p class="slds-text-title">Quote amount (net)</p>
+                        <p class="slds-text-heading_small" data-id="net">{figures.net}</p>
+                        <p class="slds-text-body_small">List {figures.list}, discount {figures.discountAmount}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                        <p class="slds-text-title">Requested discount</p>
+                        <p data-id="requested">{figures.requested}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                        <p class="slds-text-title">Approval threshold</p>
+                        <p data-id="threshold">{figures.threshold} ({figures.tier})</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                        <p class="slds-text-title">Approver</p>
+                        <p data-id="approver">{approverLabel}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                        <p class="slds-text-title">Quote status</p>
+                        <span class={statusClass}>{summary.status}</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-3">
+                        <p class="slds-text-title">Approval status</p>
+                        <span class={approvalStatusClass} data-id="approval-status">{summary.approvalStatus}</span>
+                    </div>
+                </div>
+
+                <template lwc:if={hasLatestComments}>
+                    <div class="slds-var-m-top_small">
+                        <p class="slds-text-title">Comments</p>
+                        <p data-id="comments">{summary.latestComments}</p>
+                    </div>
+                </template>
+
+                <template lwc:if={canDecide}>
+                    <div class="slds-box slds-var-m-top_medium">
+                        <lightning-textarea
+                            label="Comments"
+                            placeholder="Required when rejecting"
+                            value={comments}
+                            onchange={handleCommentsChange}
+                        ></lightning-textarea>
+                        <template lwc:if={commentsError}>
+                            <p class="slds-text-color_error slds-text-body_small">{commentsError}</p>
+                        </template>
+                        <div class="slds-var-m-top_x-small">
+                            <lightning-button
+                                label="Approve"
+                                variant="brand"
+                                disabled={isWorking}
+                                onclick={handleApprove}
+                                class="slds-var-m-right_x-small"
+                            ></lightning-button>
+                            <lightning-button
+                                label="Reject"
+                                variant="destructive"
+                                disabled={isWorking}
+                                onclick={handleReject}
+                            ></lightning-button>
+                        </div>
+                    </div>
+                </template>
+
+                <div class="slds-var-m-top_medium">
+                    <template lwc:if={canRecall}>
+                        <lightning-button label="Recall" disabled={isWorking} onclick={handleRecall}></lightning-button>
+                    </template>
+                    <template lwc:if={canConvert}>
+                        <div class="slds-grid slds-grid_vertical-align-end slds-gutters_x-small">
+                            <div class="slds-col">
+                                <lightning-input
+                                    data-id="po"
+                                    label="Customer PO number"
+                                    value={poNumber}
+                                    onchange={handlePoChange}
+                                ></lightning-input>
+                            </div>
+                            <div class="slds-col slds-grow-none">
+                                <lightning-button
+                                    label="Convert to order"
+                                    variant="success"
+                                    disabled={isWorking}
+                                    onclick={handleConvert}
+                                ></lightning-button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+
+                <template lwc:if={hasHistory}>
+                    <div class="slds-var-m-top_medium">
+                        <h3 class="slds-text-heading_small">History</h3>
+                        <ul>
+                            <template for:each={history} for:item="item">
+                                <li key={item.id} class="slds-var-m-vertical_x-small">
+                                    <span class={item.badge}>{item.status}</span>
+                                    <span class="slds-var-m-left_x-small">Tier {item.tier} · {item.approverName}</span>
+                                    <lightning-formatted-date-time
+                                        class="slds-var-m-left_x-small slds-text-body_small"
+                                        value={item.when}
+                                        year="numeric"
+                                        month="short"
+                                        day="2-digit"
+                                        hour="2-digit"
+                                        minute="2-digit"
+                                    ></lightning-formatted-date-time>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>

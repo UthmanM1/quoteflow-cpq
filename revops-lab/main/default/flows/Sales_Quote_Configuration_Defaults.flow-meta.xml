@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>62.0</apiVersion>
+    <assignments>
+        <name>Apply_Defaults</name>
+        <label>Apply Defaults</label>
+        <locationX>176</locationX>
+        <locationY>431</locationY>
+        <assignmentItems>
+            <assignToReference>$Record.Account__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>DefaultAccountId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.Price_Book__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>DefaultPriceBookId</elementReference>
+            </value>
+        </assignmentItems>
+        <assignmentItems>
+            <assignToReference>$Record.Valid_Until__c</assignToReference>
+            <operator>Assign</operator>
+            <value>
+                <elementReference>DefaultValidUntil</elementReference>
+            </value>
+        </assignmentItems>
+    </assignments>
+    <description>Before-save on create: defaults Account, Price Book and Valid Until from the opportunity when the user leaves them blank. Runs before Apex before-insert triggers (order of execution), so the trigger and validation rules see the defaulted values.</description>
+    <environments>Default</environments>
+    <formulas>
+        <name>DefaultAccountId</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!$Record.Account__c}), {!Get_Opportunity.AccountId}, {!$Record.Account__c})</expression>
+    </formulas>
+    <formulas>
+        <name>DefaultPriceBookId</name>
+        <dataType>String</dataType>
+        <expression>IF(ISBLANK({!$Record.Price_Book__c}), {!Get_Opportunity.Pricebook2Id}, {!$Record.Price_Book__c})</expression>
+    </formulas>
+    <formulas>
+        <name>DefaultValidUntil</name>
+        <dataType>Date</dataType>
+        <expression>IF(ISBLANK({!$Record.Valid_Until__c}), TODAY() + 30, {!$Record.Valid_Until__c})</expression>
+    </formulas>
+    <interviewLabel>Sales Quote Configuration Defaults {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>Sales Quote Configuration Defaults</label>
+    <processMetadataValues>
+        <name>BuilderType</name>
+        <value>
+            <stringValue>LightningFlowBuilder</stringValue>
+        </value>
+    </processMetadataValues>
+    <processMetadataValues>
+        <name>CanvasMode</name>
+        <value>
+            <stringValue>AUTO_LAYOUT_CANVAS</stringValue>
+        </value>
+    </processMetadataValues>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Get_Opportunity</name>
+        <label>Get Opportunity</label>
+        <locationX>176</locationX>
+        <locationY>323</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <connector>
+            <targetReference>Apply_Defaults</targetReference>
+        </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Id</field>
+            <operator>EqualTo</operator>
+            <value>
+                <elementReference>$Record.Opportunity__c</elementReference>
+            </value>
+        </filters>
+        <getFirstRecordOnly>true</getFirstRecordOnly>
+        <object>Opportunity</object>
+        <queriedFields>Id</queriedFields>
+        <queriedFields>AccountId</queriedFields>
+        <queriedFields>Pricebook2Id</queriedFields>
+        <storeOutputAutomatically>true</storeOutputAutomatically>
+    </recordLookups>
+    <start>
+        <locationX>50</locationX>
+        <locationY>0</locationY>
+        <connector>
+            <targetReference>Get_Opportunity</targetReference>
+        </connector>
+        <object>Quote_Configuration__c</object>
+        <recordTriggerType>Create</recordTriggerType>
+        <triggerType>RecordBeforeSave</triggerType>
+    </start>
+    <status>Active</status>
+</Flow>
