@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Break-glass: edit commercial terms and lines of a submitted quote, and act on behalf of the quote owner (submit, recall, convert). Checked in validation rules and Apex.</description>
+    <isLicensed>false</isLicensed>
+    <label>Sales Override Quote Lock</label>
+</CustomPermission>

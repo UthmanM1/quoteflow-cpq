@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPermission xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Required to create or change Discount Policy records (enforced by a validation rule, in addition to object permissions).</description>
+    <isLicensed>false</isLicensed>
+    <label>Sales Manage Discount Policy</label>
+</CustomPermission>
