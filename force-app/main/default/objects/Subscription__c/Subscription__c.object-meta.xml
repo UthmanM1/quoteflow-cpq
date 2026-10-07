@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Active recurring entitlement created from an ordered quote.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>Subscription</label>
+    <nameField>
+        <displayFormat>SUB-{000000}</displayFormat>
+        <label>Subscription Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Subscriptions</pluralLabel>
+    <sharingModel>Private</sharingModel>
+</CustomObject>
