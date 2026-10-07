@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<PermissionSetGroup xmlns="http://soap.sforce.com/2006/04/metadata">
-    <description>Finance review and contracted pricing.</description>
-    <label>QF Finance</label>
-    <permissionSets>QF_Base_Access</permissionSets>
-    <permissionSets>QF_Finance_Approver</permissionSets>
-    <status>Updated</status>
-</PermissionSetGroup>
