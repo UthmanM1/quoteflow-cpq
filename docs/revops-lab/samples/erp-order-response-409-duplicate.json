@@ -1,0 +1,6 @@
+{
+  "erpOrderNumber": "ATL-SO-778812",
+  "status": "DUPLICATE",
+  "errorCode": "IDEMPOTENT_REPLAY",
+  "message": "An order already exists for Idempotency-Key sf-order-801Hs00000AbCdEIAV"
+}

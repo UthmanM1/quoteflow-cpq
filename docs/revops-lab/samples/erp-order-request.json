@@ -1,0 +1,28 @@
+{
+  "correlationId": "4f2b8d0e-6a71-4c3e-9b55-0d1e7a9c2f10",
+  "salesforceOrderId": "801Hs00000AbCdEIAV",
+  "orderNumber": "00000107",
+  "customerAccountNumber": "ERP-1001",
+  "purchaseOrderNumber": "PO-4471",
+  "orderDate": "2026-10-07",
+  "currencyCode": "USD",
+  "totalAmount": 12600.00,
+  "lines": [
+    {
+      "lineNumber": 1,
+      "itemCode": "ATL-RL-PLATFORM",
+      "description": "Platform Subscription",
+      "quantity": 8,
+      "unitPrice": 950.00,
+      "lineTotal": 7600.00
+    },
+    {
+      "lineNumber": 2,
+      "itemCode": "ATL-RL-IMPL",
+      "description": "Implementation Package",
+      "quantity": 1,
+      "unitPrice": 5000.00,
+      "lineTotal": 5000.00
+    }
+  ]
+}

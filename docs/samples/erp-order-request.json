@@ -1,0 +1,56 @@
+{
+  "correlationId": "7d1f6c9e-3b52-4a0e-9c1a-2f8e0b6d4a11",
+  "quoteId": "a01Hs00001ABCdEIAX",
+  "quoteNumber": "Q-000042",
+  "customerId": "ERP-C-1001",
+  "currencyCode": "USD",
+  "termMonths": 24,
+  "totalNetAmount": 41280.00,
+  "validUntil": "2026-11-05",
+  "lines": [
+    {
+      "lineNumber": 1,
+      "sku": "ERP-QF-PLATFORM-ENT",
+      "description": "QuoteFlow Platform Enterprise",
+      "quantity": 1,
+      "unitPrice": 10000.00,
+      "discountPct": 0.00,
+      "lineTotal": 20000.00,
+      "billingModel": "Subscription",
+      "includedInBundle": false
+    },
+    {
+      "lineNumber": 2,
+      "sku": "ERP-QF-USER-SEAT",
+      "description": "Platform User Seat",
+      "quantity": 50,
+      "unitPrice": 108.00,
+      "discountPct": 10.00,
+      "lineTotal": 10800.00,
+      "billingModel": "Subscription",
+      "includedInBundle": false
+    },
+    {
+      "lineNumber": 3,
+      "sku": "ERP-QF-SECURITY-PACK",
+      "description": "Security Pack",
+      "quantity": 1,
+      "unitPrice": 0.00,
+      "discountPct": 0.00,
+      "lineTotal": 0.00,
+      "billingModel": "Subscription",
+      "includedInBundle": true
+    },
+    {
+      "lineNumber": 4,
+      "sku": "ERP-QF-IMPL-HOURLY",
+      "description": "Implementation Hours",
+      "quantity": 60,
+      "unitPrice": 168.00,
+      "discountPct": 16.00,
+      "lineTotal": 10080.00,
+      "billingModel": "One-Time",
+      "includedInBundle": false
+    }
+  ]
+}

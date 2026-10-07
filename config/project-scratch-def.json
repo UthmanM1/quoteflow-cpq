@@ -1,0 +1,11 @@
+{
+  "orgName": "QuoteFlow CPQ Demo",
+  "edition": "Developer",
+  "features": ["EnableSetPasswordInApi"],
+  "settings": {
+    "lightningExperienceSettings": { "enableS1DesktopEnabled": true },
+    "securitySettings": { "passwordPolicies": { "enableSetPasswordInApi": true } },
+    "orderSettings": { "enableOrders": true },
+    "opportunitySettings": { "enableOpportunityTeam": false }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "status": "UNAVAILABLE",
+  "errorCode": "MAINTENANCE",
+  "message": "Order service is in a maintenance window; retry later"
+}

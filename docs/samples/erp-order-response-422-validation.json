@@ -1,0 +1,6 @@
+{
+  "orderId": null,
+  "status": "REJECTED",
+  "message": "SKU ERP-QF-IMPL-HOURLY is not active for customer ERP-C-1001",
+  "errorCode": "UNKNOWN_SKU"
+}

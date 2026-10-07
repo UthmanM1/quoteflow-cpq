@@ -1,0 +1,5 @@
+{
+  "status": "REJECTED",
+  "errorCode": "UNKNOWN_ITEM",
+  "message": "Item ATL-RL-EDGE is not sellable in the customer's region"
+}

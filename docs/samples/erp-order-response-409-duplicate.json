@@ -1,0 +1,6 @@
+{
+  "orderId": "SO-90001",
+  "status": "EXISTS",
+  "message": "An order already exists for this idempotency key",
+  "errorCode": "DUPLICATE"
+}
