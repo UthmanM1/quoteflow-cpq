@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>ERP_Sync_Generation__c</fullName>
+    <description>Increments when an operator requeues a failed sync. Part of the ERP Idempotency-Key so retries of one generation replay safely while a deliberate resend is treated as a new request.</description>
+    <label>ERP Sync Generation</label>
+    <precision>4</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+</CustomField>
