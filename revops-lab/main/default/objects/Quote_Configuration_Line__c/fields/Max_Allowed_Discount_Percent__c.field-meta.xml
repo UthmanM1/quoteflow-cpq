@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Max_Allowed_Discount_Percent__c</fullName>
+    <description>Cap from the active discount policy, set by the trigger and enforced by a validation rule.</description>
+    <label>Max Allowed Discount %</label>
+    <precision>5</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Percent</type>
+</CustomField>

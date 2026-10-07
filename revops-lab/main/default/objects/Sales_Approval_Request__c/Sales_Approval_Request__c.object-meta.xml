@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>One approval request per submission. Created and decided only by SalesQuoteApprovalService; direct edits are refused by SalesApprovalRequestTriggerHandler.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>Sales Approval Request</label>
+    <nameField>
+        <displayFormat>SAR-{000000}</displayFormat>
+        <label>Request Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Sales Approval Requests</pluralLabel>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

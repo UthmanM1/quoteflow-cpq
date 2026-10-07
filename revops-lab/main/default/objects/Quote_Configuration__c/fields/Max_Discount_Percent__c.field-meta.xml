@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Max_Discount_Percent__c</fullName>
+    <label>Max Line Discount %</label>
+    <summarizedField>Quote_Configuration_Line__c.Discount_Percent__c</summarizedField>
+    <summaryForeignKey>Quote_Configuration_Line__c.Quote_Configuration__c</summaryForeignKey>
+    <summaryOperation>max</summaryOperation>
+    <type>Summary</type>
+</CustomField>

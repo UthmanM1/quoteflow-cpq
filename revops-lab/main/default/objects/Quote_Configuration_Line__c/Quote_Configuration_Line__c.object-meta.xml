@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Priced product line. List price and policy cap are set by the before trigger (ProductPricingService, DiscountPolicyService); totals are formulas so they can roll up natively.</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>Quote Configuration Line</label>
+    <nameField>
+        <displayFormat>QCL-{0000000}</displayFormat>
+        <label>Line Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Quote Configuration Lines</pluralLabel>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

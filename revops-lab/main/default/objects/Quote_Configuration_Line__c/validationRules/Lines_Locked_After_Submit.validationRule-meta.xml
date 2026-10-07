@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lines_Locked_After_Submit</fullName>
+    <active>true</active>
+    <description>Lines cannot be added or edited once the quote is submitted (deletes are blocked by the trigger).</description>
+    <errorConditionFormula>AND(OR(ISPICKVAL(Quote_Configuration__r.Status__c, 'Pending Approval'), ISPICKVAL(Quote_Configuration__r.Status__c, 'Approved'), ISPICKVAL(Quote_Configuration__r.Status__c, 'Ordered')), NOT($Permission.Sales_Override_Quote_Lock))</errorConditionFormula>
+    <errorMessage>Lines cannot change after the quote is submitted. Recall the quote first.</errorMessage>
+</ValidationRule>

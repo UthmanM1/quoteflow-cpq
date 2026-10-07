@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Requires_Manage_Policy_Permission</fullName>
+    <active>true</active>
+    <description>Only holders of the Sales_Manage_Discount_Policy custom permission may create or change policies, even if object permissions are granted by mistake.</description>
+    <errorConditionFormula>NOT($Permission.Sales_Manage_Discount_Policy)</errorConditionFormula>
+    <errorMessage>You do not have permission to maintain discount policies.</errorMessage>
+</ValidationRule>

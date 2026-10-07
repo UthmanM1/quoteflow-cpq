@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Approval tiers for lab quotes: a tier applies when the max line discount is above its threshold or the net amount reaches its minimum. The highest matching tier decides the approver.</description>
+    <label>Approval Routing</label>
+    <pluralLabel>Approval Routings</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

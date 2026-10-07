@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Min_Discount_Percent__c</fullName>
+    <inlineHelpText>Tier applies when the max line discount is strictly greater than this value (e.g. 10 = 10%).</inlineHelpText>
+    <label>Discount % Above</label>
+    <precision>5</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <type>Number</type>
+</CustomField>

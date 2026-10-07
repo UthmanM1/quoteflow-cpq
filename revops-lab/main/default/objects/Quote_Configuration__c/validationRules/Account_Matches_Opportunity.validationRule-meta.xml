@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Account_Matches_Opportunity</fullName>
+    <active>true</active>
+    <description>The quote account must be the opportunity account.</description>
+    <errorConditionFormula>AND(NOT(ISBLANK(Account__c)), NOT(ISBLANK(Opportunity__c)), Account__c &lt;&gt; Opportunity__r.AccountId)</errorConditionFormula>
+    <errorDisplayField>Account__c</errorDisplayField>
+    <errorMessage>The account must match the opportunity account.</errorMessage>
+</ValidationRule>

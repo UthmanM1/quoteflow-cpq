@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rejection_Requires_Comment</fullName>
+    <active>true</active>
+    <description>A rejection must explain itself (at least 10 characters). Also enforced in Apex for a clear message.</description>
+    <errorConditionFormula>AND(ISPICKVAL(Status__c, 'Rejected'), LEN(Comments__c) &lt; 10)</errorConditionFormula>
+    <errorDisplayField>Comments__c</errorDisplayField>
+    <errorMessage>Explain the rejection in at least 10 characters.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Closed_Won_Requires_Ordered_Quote</fullName>
+    <active>true</active>
+    <description>Lab rule: an opportunity can only be Closed Won once its primary quote configuration has been ordered. Bypass with Sales_Override_Quote_Lock.</description>
+    <errorConditionFormula>AND(ISCHANGED(StageName), ISPICKVAL(StageName, 'Closed Won'), NOT(ISPICKVAL(Primary_Quote_Configuration__r.Status__c, 'Ordered')), NOT($Permission.Sales_Override_Quote_Lock))</errorConditionFormula>
+    <errorDisplayField>StageName</errorDisplayField>
+    <errorMessage>Convert the primary quote configuration to an order before closing the opportunity as won.</errorMessage>
+</ValidationRule>

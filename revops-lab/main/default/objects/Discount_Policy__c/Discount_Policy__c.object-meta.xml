@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <allowInChatterGroups>false</allowInChatterGroups>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Effective-dated maximum discount per product family. Business data maintained in the org by Finance (contrast with Approval_Routing__mdt, which is deployed configuration).</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <label>Discount Policy</label>
+    <nameField>
+        <label>Policy Name</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Discount Policies</pluralLabel>
+    <sharingModel>Read</sharingModel>
+</CustomObject>

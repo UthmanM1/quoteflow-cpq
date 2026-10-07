@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Price_Book_Fixed_Once_Lines_Exist</fullName>
+    <active>true</active>
+    <description>Lines are priced from the quote price book when they are saved. Changing the price book afterwards would leave them at the old prices, so it is blocked while lines exist.</description>
+    <errorConditionFormula>AND(ISCHANGED(Price_Book__c), Line_Count__c &gt; 0)</errorConditionFormula>
+    <errorDisplayField>Price_Book__c</errorDisplayField>
+    <errorMessage>Remove the lines before changing the price book.</errorMessage>
+</ValidationRule>

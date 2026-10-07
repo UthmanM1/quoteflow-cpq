@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Price_Book_Entry_Id__c</fullName>
+    <description>Set by ProductPricingService; used for OrderItem creation.</description>
+    <label>Price Book Entry Id</label>
+    <length>18</length>
+    <required>false</required>
+    <type>Text</type>
+</CustomField>

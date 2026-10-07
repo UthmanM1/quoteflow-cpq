@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Valid_Until_Not_In_Past</fullName>
+    <active>true</active>
+    <description>A new or changed expiry date cannot be in the past.</description>
+    <errorConditionFormula>AND(OR(ISNEW(), ISCHANGED(Valid_Until__c)), NOT(ISBLANK(Valid_Until__c)), Valid_Until__c &lt; TODAY())</errorConditionFormula>
+    <errorDisplayField>Valid_Until__c</errorDisplayField>
+    <errorMessage>Valid Until cannot be in the past.</errorMessage>
+</ValidationRule>

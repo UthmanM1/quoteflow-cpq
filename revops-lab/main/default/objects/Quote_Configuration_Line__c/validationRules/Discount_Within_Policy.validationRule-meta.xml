@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Discount_Within_Policy</fullName>
+    <active>true</active>
+    <description>Runs after the before trigger has set Max_Allowed_Discount_Percent__c from the discount policy (order of execution).</description>
+    <errorConditionFormula>OR(Discount_Percent__c &lt; 0, Discount_Percent__c &gt; BLANKVALUE(Max_Allowed_Discount_Percent__c, 0))</errorConditionFormula>
+    <errorDisplayField>Discount_Percent__c</errorDisplayField>
+    <errorMessage>Discount exceeds the maximum allowed by the discount policy for this product family.</errorMessage>
+</ValidationRule>
