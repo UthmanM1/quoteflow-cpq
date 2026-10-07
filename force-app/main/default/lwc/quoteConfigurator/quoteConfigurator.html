@@ -1,0 +1,319 @@
+<template>
+    <lightning-card title="Quote Configurator" icon-name="standard:quotes">
+        <div slot="actions">
+            <template lwc:if={isLocked}>
+                <lightning-button
+                    label="Open quote"
+                    onclick={handleOpenQuote}
+                    class="slds-m-right_x-small"
+                ></lightning-button>
+                <lightning-button label="New quote" variant="neutral" onclick={handleStartOver}></lightning-button>
+            </template>
+        </div>
+
+        <div class="slds-var-p-horizontal_medium slds-is-relative">
+            <template lwc:if={showSpinner}>
+                <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+            </template>
+
+            <template lwc:if={loadError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error slds-var-m-bottom_small" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <h2>{loadError}</h2>
+                </div>
+            </template>
+
+            <template lwc:if={actionError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error slds-var-m-bottom_small" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <h2>{actionError}</h2>
+                </div>
+            </template>
+
+            <template lwc:if={isContextLoaded}>
+                <template lwc:if={hasAccount}>
+                    <div class="slds-grid slds-wrap slds-gutters_small slds-var-m-bottom_small">
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                            <p class="slds-text-title">Account</p>
+                            <p class="slds-text-heading_small">{context.accountName}</p>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                            <lightning-combobox
+                                name="pricebook"
+                                label="Price book"
+                                value={pricebookId}
+                                options={pricebookOptions}
+                                disabled={isLocked}
+                                onchange={handlePricebookChange}
+                            ></lightning-combobox>
+                        </div>
+                        <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-3">
+                            <lightning-input
+                                data-id="term"
+                                type="number"
+                                label="Term (months)"
+                                value={termMonths}
+                                min="1"
+                                max={maxTermMonths}
+                                step="1"
+                                required
+                                message-when-range-overflow={termOverflowMessage}
+                                message-when-range-underflow="Term must be at least 1 month."
+                                disabled={isLocked}
+                                onchange={handleTermChange}
+                            ></lightning-input>
+                        </div>
+                    </div>
+
+                    <lightning-combobox
+                        data-id="product-picker"
+                        name="product"
+                        label="Add product or bundle"
+                        placeholder="Search the catalogue"
+                        options={productOptions}
+                        disabled={isLocked}
+                        onchange={handleAddProduct}
+                    ></lightning-combobox>
+
+                    <!-- Configuration lines -->
+                    <template lwc:if={hasLines}>
+                        <ul class="slds-var-m-top_medium">
+                            <template for:each={linesView} for:item="line">
+                                <li key={line.key} class="slds-box slds-var-m-bottom_small">
+                                    <div class="slds-grid slds-grid_vertical-align-end slds-gutters_small slds-wrap">
+                                        <div class="slds-col slds-size_1-of-1 slds-medium-size_5-of-12">
+                                            <p class="slds-text-heading_small">{line.title}</p>
+                                            <template lwc:if={line.isBundle}>
+                                                <lightning-badge label="Bundle"></lightning-badge>
+                                            </template>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-12">
+                                            <lightning-input
+                                                type="number"
+                                                label="Quantity"
+                                                value={line.quantity}
+                                                min="1"
+                                                step="1"
+                                                data-key={line.key}
+                                                data-field="quantity"
+                                                disabled={isLocked}
+                                                onchange={handleLineField}
+                                            ></lightning-input>
+                                        </div>
+                                        <div class="slds-col slds-size_1-of-2 slds-medium-size_3-of-12">
+                                            <lightning-input
+                                                type="number"
+                                                label="Discount %"
+                                                value={line.manualDiscountPct}
+                                                min="0"
+                                                max={maxDiscount}
+                                                step="0.5"
+                                                data-key={line.key}
+                                                data-field="manualDiscountPct"
+                                                disabled={isLocked}
+                                                onchange={handleLineField}
+                                            ></lightning-input>
+                                            <template lwc:if={line.discountError}>
+                                                <p class="slds-text-color_error slds-text-body_small">
+                                                    {line.discountError}
+                                                </p>
+                                            </template>
+                                        </div>
+                                        <div
+                                            class="slds-col slds-size_1-of-1 slds-medium-size_2-of-12 slds-text-align_right"
+                                        >
+                                            <lightning-button-icon
+                                                icon-name="utility:delete"
+                                                alternative-text="Remove line"
+                                                variant="bare"
+                                                data-key={line.key}
+                                                disabled={isLocked}
+                                                onclick={handleRemoveLine}
+                                            ></lightning-button-icon>
+                                        </div>
+                                    </div>
+
+                                    <template lwc:if={line.optionsVisible}>
+                                        <fieldset class="slds-var-m-top_small">
+                                            <legend class="slds-text-title">Options</legend>
+                                            <template for:each={line.options} for:item="option">
+                                                <div
+                                                    key={option.productId}
+                                                    class="slds-grid slds-grid_vertical-align-center slds-gutters_small"
+                                                >
+                                                    <div class="slds-col slds-size_7-of-12">
+                                                        <lightning-input
+                                                            data-role="option-toggle"
+                                                            type="checkbox"
+                                                            label={option.name}
+                                                            checked={option.selected}
+                                                            disabled={option.isRequired}
+                                                            data-key={line.key}
+                                                            data-option={option.productId}
+                                                            onchange={handleOptionToggle}
+                                                        ></lightning-input>
+                                                    </div>
+                                                    <div class="slds-col slds-size_2-of-12">
+                                                        <template lwc:if={option.badge}>
+                                                            <lightning-badge label={option.badge}></lightning-badge>
+                                                        </template>
+                                                    </div>
+                                                    <div class="slds-col slds-size_3-of-12">
+                                                        <lightning-input
+                                                            type="number"
+                                                            variant="label-hidden"
+                                                            label="Option quantity"
+                                                            value={option.quantity}
+                                                            min={option.minQuantity}
+                                                            max={option.maxQuantity}
+                                                            disabled={option.isDisabledQuantity}
+                                                            data-key={line.key}
+                                                            data-option={option.productId}
+                                                            onchange={handleOptionQuantity}
+                                                        ></lightning-input>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </fieldset>
+                                    </template>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+
+                    <!-- Validation -->
+                    <template lwc:if={hasValidationErrors}>
+                        <div class="slds-box slds-theme_error slds-var-m-vertical_small" role="alert">
+                            <p class="slds-text-heading_small">Fix these before saving</p>
+                            <ul class="slds-list_dotted">
+                                <template for:each={validationErrors} for:item="message">
+                                    <li key={message}>{message}</li>
+                                </template>
+                            </ul>
+                        </div>
+                    </template>
+                    <template lwc:if={hasWarnings}>
+                        <div class="slds-box slds-theme_warning slds-var-m-vertical_small">
+                            <ul class="slds-list_dotted">
+                                <template for:each={warnings} for:item="message">
+                                    <li key={message}>{message}</li>
+                                </template>
+                            </ul>
+                        </div>
+                    </template>
+
+                    <!-- Pricing and summary -->
+                    <template lwc:if={hasPreview}>
+                        <div class="slds-var-m-top_medium slds-is-relative">
+                            <template lwc:if={isPricing}>
+                                <lightning-spinner alternative-text="Pricing" size="x-small"></lightning-spinner>
+                            </template>
+                            <h3 class="slds-text-heading_small slds-var-m-bottom_x-small">Pricing</h3>
+                            <div class="slds-scrollable_x">
+                                <table class="slds-table slds-table_cell-buffer slds-table_bordered">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th scope="col">Product</th>
+                                            <th scope="col" class="slds-text-align_right">Qty</th>
+                                            <th scope="col" class="slds-text-align_right">Discount</th>
+                                            <th scope="col" class="slds-text-align_right">Net unit</th>
+                                            <th scope="col" class="slds-text-align_right">Net total</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={pricedLines} for:item="line">
+                                            <tr key={line.key} class={line.rowClass}>
+                                                <th scope="row">
+                                                    <div class="slds-truncate" title={line.nameLabel}>
+                                                        {line.nameLabel}
+                                                    </div>
+                                                    <template lwc:if={line.error}>
+                                                        <div class="slds-text-color_error slds-text-body_small">
+                                                            {line.error}
+                                                        </div>
+                                                    </template>
+                                                </th>
+                                                <td class="slds-text-align_right">{line.quantity}</td>
+                                                <td class="slds-text-align_right">
+                                                    <template lwc:if={line.hasDiscount}>
+                                                        <lightning-badge label={line.discountLabel}></lightning-badge>
+                                                    </template>
+                                                </td>
+                                                <td class="slds-text-align_right">{line.netUnitLabel}</td>
+                                                <td class="slds-text-align_right">{line.netTotalLabel}</td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="slds-grid slds-wrap slds-gutters_small slds-var-m-top_small">
+                                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-5">
+                                    <p class="slds-text-title">List</p>
+                                    <p>{summary.list}</p>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-5">
+                                    <p class="slds-text-title">Discount</p>
+                                    <p>{summary.discount} ({summary.blended})</p>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-5">
+                                    <p class="slds-text-title">Highest line discount</p>
+                                    <p>{summary.maxLine}</p>
+                                </div>
+                                <div class="slds-col slds-size_1-of-2 slds-medium-size_2-of-5 slds-text-align_right">
+                                    <p class="slds-text-title">Net amount</p>
+                                    <p class="slds-text-heading_medium">{summary.net}</p>
+                                </div>
+                            </div>
+
+                            <p class="slds-var-m-top_small slds-text-body_small">
+                                <lightning-icon
+                                    icon-name={approvalIcon}
+                                    size="x-small"
+                                    class="slds-var-m-right_x-small"
+                                ></lightning-icon>
+                                {approvalMessage}
+                            </p>
+                        </div>
+                    </template>
+
+                    <!-- Approval status once saved -->
+                    <template lwc:if={approval}>
+                        <div class="slds-box slds-var-m-top_medium">
+                            <div class="slds-grid slds-grid_align-spread slds-grid_vertical-align-center">
+                                <div>
+                                    <p class="slds-text-title">Quote {approval.quoteNumber}</p>
+                                    <span class={approvalBadgeClass}>{approvalStatusLabel}</span>
+                                </div>
+                                <p class="slds-text-body_small">Approval: {approval.approvalStatus}</p>
+                            </div>
+                        </div>
+                    </template>
+                </template>
+                <template lwc:else>
+                    <p class="slds-text-color_weak slds-var-m-bottom_small">
+                        Open this component from an opportunity to create a quote for its account.
+                    </p>
+                </template>
+            </template>
+        </div>
+
+        <div slot="footer">
+            <template lwc:if={hasAccount}>
+                <lightning-button
+                    label="Save quote"
+                    variant="brand"
+                    disabled={saveDisabled}
+                    onclick={handleSave}
+                    class="slds-var-m-right_x-small"
+                ></lightning-button>
+                <lightning-button
+                    label="Submit for approval"
+                    variant="neutral"
+                    disabled={submitDisabled}
+                    onclick={handleSubmit}
+                ></lightning-button>
+            </template>
+        </div>
+    </lightning-card>
+</template>

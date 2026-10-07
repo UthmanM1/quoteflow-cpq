@@ -1,0 +1,5 @@
+.qf-component th,
+.qf-component td {
+    color: var(--slds-g-color-neutral-base-40, #5c5c5c);
+    background: var(--slds-g-color-neutral-base-98, #f8f8f8);
+}

@@ -1,0 +1,187 @@
+<template>
+    <lightning-card title="Quote Approval" icon-name="standard:approval">
+        <div class="slds-var-p-horizontal_medium slds-is-relative">
+            <template lwc:if={busy}>
+                <lightning-spinner alternative-text="Working" size="small"></lightning-spinner>
+            </template>
+
+            <template lwc:if={loadError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <h2>{loadError}</h2>
+                </div>
+            </template>
+
+            <template lwc:if={actionError}>
+                <div class="slds-notify slds-notify_alert slds-alert_error slds-var-m-bottom_small" role="alert">
+                    <span class="slds-assistive-text">Error</span>
+                    <h2>{actionError}</h2>
+                </div>
+            </template>
+
+            <template lwc:if={hasSummary}>
+                <!-- Quote details -->
+                <div class="slds-grid slds-wrap slds-gutters_small">
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                        <p class="slds-text-title">Quote</p>
+                        <p class="slds-text-heading_small">{summary.quoteNumber}</p>
+                        <p class="slds-text-body_small">{summary.accountName}</p>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                        <p class="slds-text-title">Status</p>
+                        <span class={statusBadgeClass}>{summary.status}</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                        <p class="slds-text-title">Approval</p>
+                        <span class={approvalBadgeClass}>{summary.approvalStatus}</span>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2 slds-medium-size_1-of-4">
+                        <p class="slds-text-title">Net amount</p>
+                        <p class="slds-text-heading_small">{amounts.net}</p>
+                        <p class="slds-text-body_small">List {amounts.list}</p>
+                    </div>
+                </div>
+
+                <!-- Discount versus thresholds -->
+                <div class="slds-var-m-top_medium">
+                    <h3 class="slds-text-heading_small">Discount</h3>
+                    <p class="slds-text-body_regular">
+                        Highest line discount <strong>{amounts.maxLine}</strong>, blended {amounts.blended}
+                        ({amounts.discount} off list).
+                    </p>
+                    <template lwc:if={noApprovalNeeded}>
+                        <p class="slds-text-color_success slds-text-body_small">Within policy, no approval required.</p>
+                    </template>
+                    <ul class="slds-var-m-top_x-small">
+                        <template for:each={levels} for:item="level">
+                            <li
+                                key={level.key}
+                                class="slds-grid slds-grid_vertical-align-center slds-var-m-bottom_xx-small"
+                            >
+                                <span class="slds-size_2-of-12 slds-text-title">{level.label}</span>
+                                <span class="slds-size_7-of-12 slds-text-body_small">{level.detail}</span>
+                                <span class="slds-size_3-of-12 slds-text-align_right">
+                                    <span class={level.stateClass}>{level.stateLabel}</span>
+                                </span>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+
+                <!-- Current approver -->
+                <template lwc:if={currentApprover}>
+                    <p class="slds-var-m-top_medium">
+                        <span class="slds-text-title">Waiting on</span>
+                        <strong class="slds-var-m-left_x-small">{currentApprover}</strong>
+                    </p>
+                </template>
+
+                <!-- Decision -->
+                <template lwc:if={showDecisionPanel}>
+                    <div class="slds-box slds-var-m-top_medium">
+                        <lightning-textarea
+                            label="Comments"
+                            placeholder="Required when rejecting"
+                            value={comments}
+                            onchange={handleCommentsChange}
+                        ></lightning-textarea>
+                        <template lwc:if={commentsError}>
+                            <p class="slds-text-color_error slds-text-body_small">{commentsError}</p>
+                        </template>
+                        <div class="slds-var-m-top_small">
+                            <lightning-button
+                                label="Approve"
+                                variant="brand"
+                                disabled={busy}
+                                onclick={handleApprove}
+                                class="slds-var-m-right_x-small"
+                            ></lightning-button>
+                            <lightning-button
+                                label="Reject"
+                                variant="destructive"
+                                disabled={busy}
+                                onclick={handleReject}
+                            ></lightning-button>
+                        </div>
+                    </div>
+                </template>
+                <template lwc:if={showWaiting}>
+                    <p class="slds-text-body_small slds-text-color_weak slds-var-m-top_small">
+                        Only the assigned approver can approve or reject this request.
+                    </p>
+                </template>
+
+                <!-- Owner actions -->
+                <div class="slds-var-m-top_medium">
+                    <template lwc:if={summary.canSubmit}>
+                        <lightning-button
+                            label="Submit for approval"
+                            variant="brand"
+                            disabled={busy}
+                            onclick={handleSubmit}
+                        ></lightning-button>
+                    </template>
+                    <template lwc:if={summary.canRecall}>
+                        <lightning-button
+                            label="Recall"
+                            variant="neutral"
+                            disabled={busy}
+                            onclick={handleRecall}
+                        ></lightning-button>
+                    </template>
+                    <template lwc:if={summary.canConvert}>
+                        <lightning-button
+                            label="Convert to order"
+                            variant="success"
+                            disabled={busy}
+                            onclick={handleConvert}
+                        ></lightning-button>
+                    </template>
+                </div>
+
+                <!-- ERP -->
+                <template lwc:if={erpSummary}>
+                    <div class="slds-var-m-top_medium">
+                        <h3 class="slds-text-heading_small">ERP sync</h3>
+                        <span class={erpSummary.statusClass}>{erpSummary.status}</span>
+                        <template lwc:if={erpSummary.orderId}>
+                            <span class="slds-var-m-left_x-small slds-text-body_small">Order {erpSummary.orderId}</span>
+                        </template>
+                        <template lwc:if={erpSummary.error}>
+                            <p class="slds-text-color_error slds-text-body_small">{erpSummary.error}</p>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- History -->
+                <template lwc:if={hasHistory}>
+                    <div class="slds-var-m-top_medium">
+                        <h3 class="slds-text-heading_small">History</h3>
+                        <ul>
+                            <template for:each={history} for:item="item">
+                                <li key={item.id} class="slds-var-m-vertical_x-small">
+                                    <span class={item.statusClass}>{item.status}</span>
+                                    <span class="slds-var-m-left_x-small"
+                                        >Level {item.level} &middot; {item.approverName}</span
+                                    >
+                                    <lightning-formatted-date-time
+                                        class="slds-var-m-left_x-small slds-text-body_small"
+                                        value={item.when}
+                                        year="numeric"
+                                        month="short"
+                                        day="2-digit"
+                                        hour="2-digit"
+                                        minute="2-digit"
+                                    ></lightning-formatted-date-time>
+                                    <template lwc:if={item.hasComments}>
+                                        <p class="slds-text-body_small slds-var-m-left_large">{item.comments}</p>
+                                    </template>
+                                </li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </lightning-card>
+</template>
