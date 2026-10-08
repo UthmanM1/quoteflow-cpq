@@ -38,6 +38,7 @@ Legend: **E** read and edit, **R** read only, **-** no access. Object letters: C
 | `Order.ERP_Order_Number__c` | R | R | R | R | E | E |
 | `Order.ERP_Retry_Count__c` | R | R | R | R | E | E |
 | `Order.ERP_Sync_Status__c` | R | R | R | R | E | E |
+| `Order.OpportunityId` | E | E | - | E | - | E |
 | `Order.Quote_Configuration__c` | E | E | R | E | R | E |
 | `Pricebook2.Sales_Region__c` | R | R | R | R | - | E |
 | `Product2.Billing_Frequency__c` | R | R | R | R | R | E |

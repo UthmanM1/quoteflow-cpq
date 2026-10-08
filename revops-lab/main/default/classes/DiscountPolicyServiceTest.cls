@@ -7,10 +7,13 @@ private class DiscountPolicyServiceTest {
 
     @IsTest
     static void activePolicy_currentPolicyWins_expiredIsIgnored() {
-        Map<String, Discount_Policy__c> policies = DiscountPolicyService.activePoliciesByFamily(
-            new Set<String>{ 'Software', 'Services' },
-            Date.today()
-        );
+        Map<String, Discount_Policy__c> policies;
+        System.runAs(SalesLabTestFactory.user(SalesLabTestFactory.REP)) {
+            policies = DiscountPolicyService.activePoliciesByFamily(
+                new Set<String>{ 'Software', 'Services' },
+                Date.today()
+            );
+        }
 
         Assert.areEqual(40, policies.get('software').Max_Discount_Percent__c);
         Assert.areEqual(20, policies.get('services').Max_Discount_Percent__c);
@@ -23,7 +26,9 @@ private class DiscountPolicyServiceTest {
             new Quote_Configuration_Line__c(Product_Family__c = 'Training', Discount_Percent__c = 1)
         };
 
-        DiscountPolicyService.applyCaps(lines, Date.today());
+        System.runAs(SalesLabTestFactory.user(SalesLabTestFactory.REP)) {
+            DiscountPolicyService.applyCaps(lines, Date.today());
+        }
 
         Assert.areEqual(15, lines[0].Max_Allowed_Discount_Percent__c);
         Assert.isNull(DiscountPolicyService.capViolation(lines[0]), 'The cap itself is allowed');

@@ -30,11 +30,15 @@ private class SalesIntegrationLogServiceTest {
 
     @IsTest
     static void recordAndFlush_writesOneRowPerEntry() {
-        SalesIntegrationLogService.record(entry('{}'));
-        SalesIntegrationLogService.record(entry('{}'));
-        Assert.areEqual(2, SalesIntegrationLogService.bufferedCount());
+        User integration = SalesLabTestFactory.user('rlintlog', null, null, SalesLabTestFactory.INTEGRATION_SETS);
+        Integer saved;
+        System.runAs(integration) {
+            SalesIntegrationLogService.record(entry('{}'));
+            SalesIntegrationLogService.record(entry('{}'));
+            Assert.areEqual(2, SalesIntegrationLogService.bufferedCount());
 
-        Integer saved = SalesIntegrationLogService.flush();
+            saved = SalesIntegrationLogService.flush();
+        }
 
         Assert.areEqual(2, saved);
         Assert.areEqual(0, SalesIntegrationLogService.bufferedCount());

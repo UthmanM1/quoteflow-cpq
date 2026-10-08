@@ -75,6 +75,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Order.OpportunityId</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Order.Quote_Configuration__c</field>
         <readable>true</readable>
     </fieldPermissions>

@@ -35,10 +35,13 @@ private class ProductPricingServiceTest {
             new Quote_Configuration_Line__c(Quantity__c = 1)
         };
 
-        Map<Integer, String> errors = ProductPricingService.priceLines(
-            lines,
-            new List<Id>{ catalog.pricebookId, null, catalog.pricebookId }
-        );
+        Map<Integer, String> errors;
+        System.runAs(SalesLabTestFactory.user(SalesLabTestFactory.REP)) {
+            errors = ProductPricingService.priceLines(
+                lines,
+                new List<Id>{ catalog.pricebookId, null, catalog.pricebookId }
+            );
+        }
 
         Assert.isTrue(errors.get(0).contains('no active price'));
         Assert.isTrue(errors.get(1).contains('no price book'));

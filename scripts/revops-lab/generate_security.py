@@ -88,7 +88,7 @@ FIELDS = {
         **fs('Sales_Approval_Request__c', _APPROVAL, 'R'), **fs('Sales_Subscription__c', _SUB, 'R'),
         **fs('Account', ['Customer_Segment__c'], 'E'), **fs('Contact', ['Buying_Role__c'], 'E'),
         **fs('Opportunity', ['Primary_Quote_Configuration__c'], 'E'),
-        **fs('Order', ['Quote_Configuration__c'], 'E'), **fs('Order', _ORDER_ERP, 'R'),
+        **fs('Order', ['OpportunityId', 'Quote_Configuration__c'], 'E'), **fs('Order', _ORDER_ERP, 'R'),
     },
     'Sales_Manager_Access': {},
     'Finance_Manager_Access': {
@@ -108,7 +108,7 @@ FIELDS = {
         **fs('Sales_Approval_Request__c', _APPROVAL, 'R'), **fs('Discount_Policy__c', _POLICY, 'E'),
         **fs('Sales_Integration_Log__c', _LOG, 'E'), **fs('Sales_Subscription__c', _SUB, 'E'),
         **fs('Account', ['Customer_Segment__c', 'ERP_Account_Number__c'], 'E'), **fs('Contact', ['Buying_Role__c'], 'E'),
-        **fs('Opportunity', ['Primary_Quote_Configuration__c'], 'E'), **fs('Order', ['Quote_Configuration__c'], 'E'),
+        **fs('Opportunity', ['Primary_Quote_Configuration__c'], 'E'), **fs('Order', ['OpportunityId', 'Quote_Configuration__c'], 'E'),
         **fs('Order', _ORDER_ERP, 'E'), **fs('Product2', ['Billing_Frequency__c', 'ERP_Item_Code__c'], 'E'),
         **fs('Pricebook2', ['Sales_Region__c'], 'E'),
     },
