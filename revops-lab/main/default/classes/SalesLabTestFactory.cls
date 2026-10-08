@@ -214,7 +214,7 @@ public class SalesLabTestFactory {
     /** True when the user has record access to the record (read, or edit when needEdit). Read-only; for preconditions. */
     public static Boolean hasAccess(Id userId, Id recordId, Boolean needEdit) {
         List<UserRecordAccess> rows = [
-            SELECT HasReadAccess, HasEditAccess
+            SELECT RecordId, HasReadAccess, HasEditAccess
             FROM UserRecordAccess
             WHERE UserId = :userId AND RecordId = :recordId
         ];
@@ -232,7 +232,7 @@ public class SalesLabTestFactory {
             'quoteStatus=' + [SELECT Status__c FROM Quote_Configuration__c WHERE Id = :quoteId].Status__c
         };
         for (UserRecordAccess access : [
-            SELECT HasReadAccess, HasEditAccess
+            SELECT RecordId, HasReadAccess, HasEditAccess
             FROM UserRecordAccess
             WHERE UserId = :userId AND RecordId = :quoteId
         ]) {
