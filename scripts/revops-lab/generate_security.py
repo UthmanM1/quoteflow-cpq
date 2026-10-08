@@ -44,8 +44,8 @@ OBJECTS = {
     'Sales_Representative_Access': {'Account': 'CRE', 'Contact': 'CRE', 'Opportunity': 'CRE', 'Order': 'CRE',
                                     'Quote_Configuration__c': 'CRE', 'Quote_Configuration_Line__c': 'CRED',
                                     'Sales_Approval_Request__c': 'R', 'Sales_Subscription__c': 'R'},
-    'Sales_Manager_Access': {'Quote_Configuration__c': 'CRED', 'Sales_Approval_Request__c': 'RE', 'Sales_Subscription__c': 'R'},
-    'Finance_Manager_Access': {'Quote_Configuration__c': 'RE', 'Quote_Configuration_Line__c': 'R', 'Sales_Approval_Request__c': 'RE',
+    'Sales_Manager_Access': {'Account': 'R', 'Quote_Configuration__c': 'CRED', 'Sales_Approval_Request__c': 'RE', 'Sales_Subscription__c': 'R'},
+    'Finance_Manager_Access': {'Account': 'R', 'Quote_Configuration__c': 'RE', 'Quote_Configuration_Line__c': 'R', 'Sales_Approval_Request__c': 'RE',
                                'Order': 'R', 'Sales_Subscription__c': 'R', 'Discount_Policy__c': 'CRE'},
     'Sales_Director_Access': {'Quote_Configuration__c': 'CRED', 'Sales_Approval_Request__c': 'RE'},
     'Sales_Integration_Access': {'Account': 'RV', 'Order': 'REV', 'Product2': 'R', 'Sales_Integration_Log__c': 'CRE'},
@@ -84,7 +84,7 @@ FIELDS = {
     },
     'Sales_Representative_Access': {
         **fs('Quote_Configuration__c', _USER_QUOTE, 'E'), **fs('Quote_Configuration__c', _RO_QUOTE, 'R'),
-        **fs('Quote_Configuration_Line__c', ['Discount_Percent__c'], 'E'), **fs('Quote_Configuration_Line__c', _RO_LINE, 'R'),
+        **fs('Quote_Configuration_Line__c', ['Product__c', 'Discount_Percent__c'], 'E'), **fs('Quote_Configuration_Line__c', _RO_LINE, 'R'),
         **fs('Sales_Approval_Request__c', _APPROVAL, 'R'), **fs('Sales_Subscription__c', _SUB, 'R'),
         **fs('Account', ['Customer_Segment__c'], 'E'), **fs('Contact', ['Buying_Role__c'], 'E'),
         **fs('Opportunity', ['Primary_Quote_Configuration__c'], 'E'),
@@ -92,7 +92,7 @@ FIELDS = {
     },
     'Sales_Manager_Access': {},
     'Finance_Manager_Access': {
-        **fs('Quote_Configuration__c', _USER_QUOTE + _RO_QUOTE, 'R'), **fs('Quote_Configuration_Line__c', ['Discount_Percent__c'] + _RO_LINE, 'R'),
+        **fs('Quote_Configuration__c', _USER_QUOTE + _RO_QUOTE, 'R'), **fs('Quote_Configuration_Line__c', ['Product__c', 'Discount_Percent__c'] + _RO_LINE, 'R'),
         **fs('Sales_Approval_Request__c', _APPROVAL, 'R'), **fs('Discount_Policy__c', _POLICY, 'E'),
         **fs('Order', ['Quote_Configuration__c'] + _ORDER_ERP, 'R'), **fs('Sales_Subscription__c', _SUB, 'R'),
         **fs('Account', ['ERP_Account_Number__c'], 'E'),
@@ -104,7 +104,7 @@ FIELDS = {
     },
     'Sales_Administrator_Access': {
         **fs('Quote_Configuration__c', _USER_QUOTE, 'E'), **fs('Quote_Configuration__c', _RO_QUOTE, 'R'),
-        **fs('Quote_Configuration_Line__c', ['Discount_Percent__c'], 'E'), **fs('Quote_Configuration_Line__c', _RO_LINE, 'R'),
+        **fs('Quote_Configuration_Line__c', ['Product__c', 'Discount_Percent__c'], 'E'), **fs('Quote_Configuration_Line__c', _RO_LINE, 'R'),
         **fs('Sales_Approval_Request__c', _APPROVAL, 'R'), **fs('Discount_Policy__c', _POLICY, 'E'),
         **fs('Sales_Integration_Log__c', _LOG, 'E'), **fs('Sales_Subscription__c', _SUB, 'E'),
         **fs('Account', ['Customer_Segment__c', 'ERP_Account_Number__c'], 'E'), **fs('Contact', ['Buying_Role__c'], 'E'),
@@ -126,8 +126,7 @@ TABS = ['Discount_Policy__c', 'Quote_Configuration__c', 'Sales_Approval_Request_
 APP_SETS = ['Sales_Lab_Base']
 
 # Fields the platform always grants (required / master-detail): documented only.
-REQUIRED = ['Quote_Configuration__c.Opportunity__c', 'Quote_Configuration_Line__c.Quote_Configuration__c', 'Quote_Configuration_Line__c.Product__c',
-            'Quote_Configuration_Line__c.Quantity__c', 'Sales_Approval_Request__c.Quote_Configuration__c', 'Discount_Policy__c.Product_Family__c',
+REQUIRED = ['Quote_Configuration__c.Opportunity__c', 'Quote_Configuration_Line__c.Quote_Configuration__c', 'Quote_Configuration_Line__c.Quantity__c', 'Sales_Approval_Request__c.Quote_Configuration__c', 'Discount_Policy__c.Product_Family__c',
             'Discount_Policy__c.Max_Discount_Percent__c', 'Discount_Policy__c.Effective_From__c', 'Sales_Subscription__c.Account__c']
 
 FLAG_ORDER = [('C', 'allowCreate'), ('D', 'allowDelete'), ('E', 'allowEdit'), ('R', 'allowRead'), ('M', 'modifyAllRecords'), ('V', 'viewAllRecords')]

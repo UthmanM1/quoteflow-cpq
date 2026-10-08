@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Product_Required</fullName>
+    <active>true</active>
+    <description>A line must reference a product. Enforced here because a lookup to Product2 cannot be both required and delete-restricted.</description>
+    <errorConditionFormula>ISBLANK(Product__c)</errorConditionFormula>
+    <errorDisplayField>Product__c</errorDisplayField>
+    <errorMessage>Product is required.</errorMessage>
+</ValidationRule>

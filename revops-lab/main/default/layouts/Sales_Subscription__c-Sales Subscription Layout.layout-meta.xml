@@ -55,5 +55,4 @@
     <showHighlightsPanel>false</showHighlightsPanel>
     <showInteractionLogPanel>false</showInteractionLogPanel>
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
-    <showSubmitForApprovalButton>false</showSubmitForApprovalButton>
 </Layout>

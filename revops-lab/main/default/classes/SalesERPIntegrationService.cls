@@ -140,7 +140,7 @@ public with sharing class SalesERPIntegrationService {
             }
             outcomes.add(syncOne(order, itemsByOrder.get(orderId), cfg));
         }
-        ErpStateWriter.write(orders, outcomes, cfg);
+        new ErpStateWriter().apply(orders, outcomes, cfg);
         SalesIntegrationLogService.flush();
         return outcomes;
     }
@@ -330,24 +330,28 @@ public with sharing class SalesERPIntegrationService {
                 Order order = orders.get(outcome.orderId);
                 Integer retries =
                     (order.ERP_Retry_Count__c == null ? 0 : Integer.valueOf(order.ERP_Retry_Count__c)) + 1;
-                Order update_ = new Order(Id = order.Id);
+                Order orderUpdate = new Order(Id = order.Id);
                 if (outcome.success) {
-                    update_.ERP_Sync_Status__c = SalesLabConstants.ERP_SYNCED;
-                    update_.ERP_Order_Number__c = outcome.erpOrderNumber;
-                    update_.ERP_Last_Error__c = null;
-                    update_.ERP_Next_Retry_At__c = null;
+                    orderUpdate.ERP_Sync_Status__c = SalesLabConstants.ERP_SYNCED;
+                    orderUpdate.ERP_Order_Number__c = outcome.erpOrderNumber;
+                    orderUpdate.ERP_Last_Error__c = null;
+                    orderUpdate.ERP_Next_Retry_At__c = null;
                 } else if (outcome.retryable && retries < cfg.maxRetries) {
-                    update_.ERP_Sync_Status__c = SalesLabConstants.ERP_PENDING;
-                    update_.ERP_Retry_Count__c = retries;
-                    update_.ERP_Next_Retry_At__c = now.addMinutes(backoffMinutes(retries, cfg));
-                    update_.ERP_Last_Error__c = outcome.errorMessage == null ? null : outcome.errorMessage.left(255);
+                    orderUpdate.ERP_Sync_Status__c = SalesLabConstants.ERP_PENDING;
+                    orderUpdate.ERP_Retry_Count__c = retries;
+                    orderUpdate.ERP_Next_Retry_At__c = now.addMinutes(backoffMinutes(retries, cfg));
+                    orderUpdate.ERP_Last_Error__c = outcome.errorMessage == null
+                        ? null
+                        : outcome.errorMessage.left(255);
                 } else {
-                    update_.ERP_Sync_Status__c = SalesLabConstants.ERP_FAILED;
-                    update_.ERP_Retry_Count__c = retries;
-                    update_.ERP_Next_Retry_At__c = null;
-                    update_.ERP_Last_Error__c = outcome.errorMessage == null ? null : outcome.errorMessage.left(255);
+                    orderUpdate.ERP_Sync_Status__c = SalesLabConstants.ERP_FAILED;
+                    orderUpdate.ERP_Retry_Count__c = retries;
+                    orderUpdate.ERP_Next_Retry_At__c = null;
+                    orderUpdate.ERP_Last_Error__c = outcome.errorMessage == null
+                        ? null
+                        : outcome.errorMessage.left(255);
                 }
-                updates.add(update_);
+                updates.add(orderUpdate);
             }
             List<Database.SaveResult> results = Database.update(updates, false);
             for (Integer i = 0; i < results.size(); i++) {
@@ -359,10 +363,6 @@ public with sharing class SalesERPIntegrationService {
                     );
                 }
             }
-        }
-
-        private static void write(Map<Id, Order> orders, List<SyncOutcome> outcomes, Settings cfg) {
-            new ErpStateWriter().apply(orders, outcomes, cfg);
         }
     }
 }

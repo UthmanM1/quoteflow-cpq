@@ -51,6 +51,7 @@ Legend: **E** read and edit, **R** read only, **-** no access. Object letters: C
 | `Quote_Configuration_Line__c.Net_Unit_Price__c` | R | R | R | R | - | R |
 | `Quote_Configuration_Line__c.Price_Book_Entry_Id__c` | R | R | R | R | - | R |
 | `Quote_Configuration_Line__c.Product_Family__c` | R | R | R | R | - | R |
+| `Quote_Configuration_Line__c.Product__c` | E | E | R | E | - | E |
 | `Quote_Configuration__c.Account__c` | E | E | R | E | - | E |
 | `Quote_Configuration__c.Approval_Required__c` | R | R | R | R | - | R |
 | `Quote_Configuration__c.Approval_Threshold_Percent__c` | R | R | R | R | - | R |
@@ -116,7 +117,6 @@ Required fields and master-detail fields cannot appear in permission sets; acces
 
 * `Quote_Configuration__c.Opportunity__c`
 * `Quote_Configuration_Line__c.Quote_Configuration__c`
-* `Quote_Configuration_Line__c.Product__c`
 * `Quote_Configuration_Line__c.Quantity__c`
 * `Sales_Approval_Request__c.Quote_Configuration__c`
 * `Discount_Policy__c.Product_Family__c`

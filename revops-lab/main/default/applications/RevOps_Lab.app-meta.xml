@@ -6,7 +6,6 @@
     </brand>
     <description>QuoteFlow Revenue Operations Lab: Sales Cloud quote-to-order on standard objects plus lab custom objects.</description>
     <formFactors>Large</formFactors>
-    <isNavAutomaticRefreshDisabled>false</isNavAutomaticRefreshDisabled>
     <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
     <label>RevOps Lab</label>
     <navType>Standard</navType>

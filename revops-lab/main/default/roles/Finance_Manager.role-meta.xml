@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Role xmlns="http://soap.sforce.com/2006/04/metadata">
-    <caseAccessLevel>None</caseAccessLevel>
+    <caseAccessLevel>Edit</caseAccessLevel>
     <contactAccessLevel>None</contactAccessLevel>
-    <description>Not in the sales line; sees submitted quotes through a sharing rule; tier 2 approver.</description>
+    <description>Outside the sales line; sees submitted quotes via sharing rule; tier 2 approver.</description>
     <mayForecastManagerShare>false</mayForecastManagerShare>
     <name>Finance Manager</name>
     <opportunityAccessLevel>Edit</opportunityAccessLevel>
