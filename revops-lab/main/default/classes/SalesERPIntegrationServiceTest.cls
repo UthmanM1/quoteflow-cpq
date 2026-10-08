@@ -53,6 +53,36 @@ private class SalesERPIntegrationServiceTest {
         ];
     }
 
+    /** Runs the sync as the integration persona (the user that owns scheduled runs), not the deploying admin. */
+    private static List<SalesERPIntegrationService.SyncOutcome> syncAsIntegration(List<Id> orderIds) {
+        List<SalesERPIntegrationService.SyncOutcome> outcomes;
+        System.runAs(SalesLabTestFactory.user(SalesLabTestFactory.INTEGRATION)) {
+            outcomes = SalesERPIntegrationService.syncOrders(orderIds);
+        }
+        return outcomes;
+    }
+
+    /** Failure-message aid: the order's ERP state and every integration log row, so a stuck order explains itself. */
+    private static String diagnostics(Id orderId) {
+        Order current = order(orderId);
+        List<String> parts = new List<String>{
+            'order status=' +
+            current.ERP_Sync_Status__c +
+            ', retries=' +
+            current.ERP_Retry_Count__c +
+            ', lastError=' +
+            current.ERP_Last_Error__c
+        };
+        for (Sales_Integration_Log__c log : [
+            SELECT Outcome__c, Http_Status_Code__c, Error_Message__c
+            FROM Sales_Integration_Log__c
+            ORDER BY CreatedDate
+        ]) {
+            parts.add('log ' + log.Outcome__c + ' ' + log.Http_Status_Code__c + ' ' + log.Error_Message__c);
+        }
+        return String.join(parts, ' | ');
+    }
+
     @IsTest
     static void sync_created_marksTheOrderSyncedAndLogsTheCall() {
         Id orderId = SalesLabTestFactory.orderedQuote(3);
@@ -60,9 +90,7 @@ private class SalesERPIntegrationServiceTest {
         Test.setMock(HttpCalloutMock.class, new ErpMock(201, CREATED));
 
         Test.startTest();
-        List<SalesERPIntegrationService.SyncOutcome> outcomes = SalesERPIntegrationService.syncOrders(
-            new List<Id>{ orderId }
-        );
+        List<SalesERPIntegrationService.SyncOutcome> outcomes = syncAsIntegration(new List<Id>{ orderId });
         Test.stopTest();
 
         Assert.isTrue(outcomes[0].success);
@@ -85,7 +113,7 @@ private class SalesERPIntegrationServiceTest {
         Test.setMock(HttpCalloutMock.class, mock);
 
         Test.startTest();
-        SalesERPIntegrationService.syncOrders(new List<Id>{ orderId });
+        syncAsIntegration(new List<Id>{ orderId });
         Test.stopTest();
 
         HttpRequest sent = mock.requests[0];
@@ -116,7 +144,7 @@ private class SalesERPIntegrationServiceTest {
         );
 
         Test.startTest();
-        SalesERPIntegrationService.syncOrders(new List<Id>{ orderId });
+        syncAsIntegration(new List<Id>{ orderId });
         Test.stopTest();
 
         Assert.areEqual('Synced', order(orderId).ERP_Sync_Status__c);
@@ -132,7 +160,7 @@ private class SalesERPIntegrationServiceTest {
         );
 
         Test.startTest();
-        SalesERPIntegrationService.syncOrders(new List<Id>{ orderId });
+        syncAsIntegration(new List<Id>{ orderId });
         Test.stopTest();
 
         Order after = order(orderId);
@@ -148,7 +176,7 @@ private class SalesERPIntegrationServiceTest {
         Test.setMock(HttpCalloutMock.class, new ErpMock(503, '{"errorCode":"MAINTENANCE"}'));
 
         Test.startTest();
-        SalesERPIntegrationService.syncOrders(new List<Id>{ orderId });
+        syncAsIntegration(new List<Id>{ orderId });
         Test.stopTest();
 
         Order after = order(orderId);
@@ -167,7 +195,7 @@ private class SalesERPIntegrationServiceTest {
         Test.setMock(HttpCalloutMock.class, mock);
 
         Test.startTest();
-        SalesERPIntegrationService.syncOrders(new List<Id>{ orderId });
+        syncAsIntegration(new List<Id>{ orderId });
         Test.stopTest();
 
         Order after = order(orderId);
@@ -186,7 +214,7 @@ private class SalesERPIntegrationServiceTest {
         Test.setMock(HttpCalloutMock.class, mock);
 
         Test.startTest();
-        SalesERPIntegrationService.syncOrders(new List<Id>{ orderId });
+        syncAsIntegration(new List<Id>{ orderId });
         Test.stopTest();
 
         Assert.areEqual(0, mock.requests.size());
@@ -211,7 +239,7 @@ private class SalesERPIntegrationServiceTest {
         Assert.areEqual(
             'Synced',
             order(orderId).ERP_Sync_Status__c,
-            'Queueable ran at stopTest as the integration user'
+            'Queueable ran at stopTest as the integration user. ' + diagnostics(orderId)
         );
         Assert.areEqual(1, [SELECT COUNT() FROM Sales_Integration_Log__c WHERE Outcome__c = 'Success']);
     }

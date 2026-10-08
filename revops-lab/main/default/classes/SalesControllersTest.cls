@@ -73,8 +73,14 @@ private class SalesControllersTest {
         System.runAs(rep()) {
             asRep = SalesApprovalController.getApprovalSummaryFresh(quoteId);
         }
+        User finance = SalesLabTestFactory.user(SalesLabTestFactory.FINANCE);
+        Assert.isTrue(
+            SalesLabTestFactory.hasAccess(finance.Id, quoteId, false),
+            'Finance should see a submitted quote through the sharing rule. ' +
+            SalesLabTestFactory.accessReport(finance.Id, quoteId)
+        );
         SalesApprovalController.ApprovalSummary asFinance;
-        System.runAs(SalesLabTestFactory.user(SalesLabTestFactory.FINANCE)) {
+        System.runAs(finance) {
             asFinance = SalesApprovalController.getApprovalSummary(quoteId);
         }
 

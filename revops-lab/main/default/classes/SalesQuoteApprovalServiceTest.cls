@@ -87,8 +87,15 @@ private class SalesQuoteApprovalServiceTest {
         Assert.areEqual(persona(SalesLabTestFactory.FINANCE).Id, request.Approver__c);
         Assert.areEqual(2, request.Approval_Tier__c);
 
+        User finance = persona(SalesLabTestFactory.FINANCE);
+        Assert.isTrue(
+            SalesLabTestFactory.hasAccess(finance.Id, quote.Id, true),
+            'Finance should have edit access to a submitted quote through the sharing rule. ' +
+            SalesLabTestFactory.accessReport(finance.Id, quote.Id)
+        );
+
         Test.startTest();
-        System.runAs(persona(SalesLabTestFactory.FINANCE)) {
+        System.runAs(finance) {
             SalesQuoteApprovalService.decide(request.Id, true, 'Margin acceptable.');
         }
         Test.stopTest();

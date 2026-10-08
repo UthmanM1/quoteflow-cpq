@@ -211,6 +211,43 @@ public class SalesLabTestFactory {
         );
     }
 
+    /** True when the user has record access to the record (read, or edit when needEdit). Read-only; for preconditions. */
+    public static Boolean hasAccess(Id userId, Id recordId, Boolean needEdit) {
+        List<UserRecordAccess> rows = [
+            SELECT HasReadAccess, HasEditAccess
+            FROM UserRecordAccess
+            WHERE UserId = :userId AND RecordId = :recordId
+        ];
+        return !rows.isEmpty() && (needEdit ? rows[0].HasEditAccess : rows[0].HasReadAccess);
+    }
+
+    /** Failure-message aid: why can (or cannot) this user see this quote? Role, status, access flags and share rows. */
+    public static String accessReport(Id userId, Id quoteId) {
+        User person = [SELECT Alias, UserRole.DeveloperName FROM User WHERE Id = :userId];
+        List<String> parts = new List<String>{
+            'user=' +
+            person.Alias +
+            ', role=' +
+            person.UserRole?.DeveloperName,
+            'quoteStatus=' + [SELECT Status__c FROM Quote_Configuration__c WHERE Id = :quoteId].Status__c
+        };
+        for (UserRecordAccess access : [
+            SELECT HasReadAccess, HasEditAccess
+            FROM UserRecordAccess
+            WHERE UserId = :userId AND RecordId = :quoteId
+        ]) {
+            parts.add('read=' + access.HasReadAccess + ', edit=' + access.HasEditAccess);
+        }
+        for (Quote_Configuration__Share share : [
+            SELECT RowCause, AccessLevel, UserOrGroupId
+            FROM Quote_Configuration__Share
+            WHERE ParentId = :quoteId
+        ]) {
+            parts.add('share ' + share.RowCause + '/' + share.AccessLevel + ' -> ' + share.UserOrGroupId);
+        }
+        return String.join(parts, '; ');
+    }
+
     public static Quote_Configuration__c requery(Id quoteId) {
         return [
             SELECT
